@@ -1,0 +1,44 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+  <h4 class="page-title">Accessories</h4>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Brand</th>
+          <th>Price</th>
+          <th>Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in data %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ a.name }}</td>
+          <td>{{ a.category }}</td>
+          <td>{{ a.brand|default:'-' }}</td>
+          <td>{{ a.price|default:'-' }}</td>
+          <td>{% if a.image %}<img src="{{ a.image.url }}" style="height:80px; width:80px; border-radius:8px;">{% else %}-{% endif %}</td>
+          <td>
+            <a href="{% url 'edit_accessory' a.id %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'delete_accessory' a.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this accessory?')">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center">No accessories</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

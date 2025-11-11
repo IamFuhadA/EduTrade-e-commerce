@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>EduTrade - Popular</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Space+Grotesk&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'web/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'web/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'web/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'web/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-2 border-white">
+                <a href="{% url 'home' %}" class="navbar-brand">
+                    <h1>EduTrade</h1>
+                </a>
+                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="{% url 'home' %}" class="nav-item nav-link ">Home</a>
+                        <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
+                        <div class="nav-item dropdown">
+                            <a href="#!" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
+                            <div class="dropdown-menu bg-light mt-2">
+                                {% if category %}
+                                {% for i in category %}
+                                <a href="{% url 'category' i.name %}" class="dropdown-item">{{ i.name }}</a>
+                                {% endfor %}
+                                {% else %}
+                                    <span class="dropdown-item text-muted">No Records</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a href="{% url 'popular' %}" class="nav-item nav-link active">Popular</a>
+                        <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                        <div class="nav-item dropdown">
+                            {% if request.session.username %}
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i> Welcome {{ request.session.username }}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end bg-light mt-2">
+                                    <a href="{% url 'signin_out' %}" class="dropdown-item">Sign out</a>
+                                </div>
+                            {% else %}
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i> Account
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end bg-light mt-2">
+                                    <a href="{% url 'signin' %}" class="dropdown-item">Sign in</a>
+                                    <a href="{% url 'signup' %}" class="dropdown-item">Sign up</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Hero Start -->
+    <div class="container-fluid pb-5 bg-primary hero-header">
+        <div class="container py-5">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-6 text-center text-lg-start">
+                    <h1 class="display-1 mb-0 animated slideInLeft">Popular Products</h1>
+                </div>
+                <div class="col-lg-6 animated slideInRight">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center justify-content-lg-end mb-0">
+                            <li class="breadcrumb-item"><a class="text-primary" href="{% url 'home' %}">Home</a></li>
+                            <li class="breadcrumb-item text-secondary active" aria-current="page">Popular</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+
+    <!-- Popular Books Start -->
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5" style="max-width: 600px;">
+                <h1 class="display-5 mb-4">Recently Added to EduTrade</h1>
+                <h4 class="section-title">Latest Books</h4>
+                <p>Explore the newest books across our categories.</p>
+            </div>
+
+            <div class="row g-4">
+                {% if books %}
+                    {% for book in books %}
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="service-item rounded h-100 p-3">
+                            <a href="{% url 'book_details' book.id %}" class="text-decoration-none text-dark d-block">
+                                {% if book.cover_image %}
+                                    <img src="{{ book.cover_image.url }}" class="img-fluid rounded mb-3" alt="{{ book.title }}">
+                                {% else %}
+                                    <img src="{% static 'web/img/newsletter.jpg' %}" class="img-fluid rounded mb-3" alt="{{ book.title }}">
+                                {% endif %}
+                                <h6 class="mb-1">{{ book.title }}</h6>
+                                <small class="text-muted d-block">{{ book.author }}</small>
+                                {% if book.price %}<div class="fw-bold text-primary mt-1">₹{{ book.price }}</div>{% endif %}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-muted">No books found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Popular Books End -->
+
+    <!-- Popular Accessories Start -->
+    <div class="container-xxl py-3 pt-0">
+        <div class="container">
+            <div class="text-center mx-auto mb-4" style="max-width: 600px;">
+                <h4 class="section-title">Latest Accessories</h4>
+                <h1 class="display-6 mb-3">New Arrivals</h1>
+                <p>Study essentials and stationery recently added.</p>
+            </div>
+            <div class="row g-4">
+                {% if accessories %}
+                    {% for acc in accessories %}
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <div class="service-item rounded h-100 p-3">
+                            <a href="{% url 'accessory_details' acc.id %}" class="text-decoration-none text-dark d-block">
+                                {% if acc.image %}
+                                    <img src="{{ acc.image.url }}" class="img-fluid rounded mb-3" alt="{{ acc.name }}">
+                                {% else %}
+                                    <img src="{% static 'web/img/newsletter.jpg' %}" class="img-fluid rounded mb-3" alt="{{ acc.name }}">
+                                {% endif %}
+                                <h6 class="mb-1">{{ acc.name }}</h6>
+                                <small class="text-muted d-block">{{ acc.brand }}</small>
+                                {% if acc.price %}<div class="fw-bold text-primary mt-1">₹{{ acc.price }}</div>{% endif %}
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-muted">No accessories found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Popular Accessories End -->
+
+
+    <!-- Newsletter Start -->
+    <div class="container-fluid bg-primary newsletter p-0">
+        <div class="container p-0">
+            <div class="row g-0 align-items-center">
+                <div class="col-md-5 ps-lg-0 text-start wow fadeIn" data-wow-delay="0.2s">
+                    <img class="img-fluid w-100" src="{% static 'web/img/newsletter.jpg' %}" alt="Newsletter">
+                </div>
+                <div class="col-md-7 py-5 newsletter-text wow fadeIn" data-wow-delay="0.5s">
+                    <div class="p-5">
+                        <h1 class="mb-5">Subscribe the <span
+                                class="text-uppercase text-primary bg-white px-2">Newsletter</span></h1>
+                        <div class="position-relative w-100 mb-2">
+                            <input class="form-control border-0 w-100 ps-4 pe-5" type="text"
+                                placeholder="Enter Your Email" style="height: 60px;">
+                            <button type="button" class="btn shadow-none position-absolute top-0 end-0 mt-2 me-2"><i
+                                    class="fa fa-paper-plane text-primary fs-4"></i></button>
+                        </div>
+                        <p class="mb-0">Diam sed sed dolor stet amet eirmod</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Newsletter End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white-50 footer pt-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.1s">
+                    <a href="{% url 'home' %}" class="d-inline-block mb-3">
+                        <h1 class="text-white">EduTrade</h1>
+                    </a>
+                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum et tempor sit. Aliqu diam
+                        amet diam et eos labore. Clita erat ipsum et lorem et sit, sed stet no labore lorem sit. Sanctus
+                        clita duo justo et tempor</p>
+                </div>
+                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.3s">
+                    <h5 class="text-white mb-4">Get In Touch</h5>
+                    <p><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                    <p><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                    <p><i class="fa fa-envelope me-3"></i>info@example.com</p>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-primary btn-square border-2 me-2" href="#!"><i
+                                class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-primary btn-square border-2 me-2" href="#!"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-primary btn-square border-2 me-2" href="#!"><i
+                                class="fab fa-youtube"></i></a>
+                        <a class="btn btn-outline-primary btn-square border-2 me-2" href="#!"><i
+                                class="fab fa-instagram"></i></a>
+                        <a class="btn btn-outline-primary btn-square border-2 me-2" href="#!"><i
+                                class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.5s">
+                    <h5 class="text-white mb-4">Popular Link</h5>
+                    <a class="btn btn-link" href="#!">About Us</a>
+                    <a class="btn btn-link" href="#!">Contact Us</a>
+                    <a class="btn btn-link" href="#!">Privacy Policy</a>
+                    <a class="btn btn-link" href="#!">Terms & Condition</a>
+                    <a class="btn btn-link" href="#!">Career</a>
+                </div>
+                <div class="col-md-6 col-lg-3 wow fadeIn" data-wow-delay="0.7s">
+                    <h5 class="text-white mb-4">Our Services</h5>
+                    <a class="btn btn-link" href="#!">Interior Design</a>
+                    <a class="btn btn-link" href="#!">Project Planning</a>
+                    <a class="btn btn-link" href="#!">Renovation</a>
+                    <a class="btn btn-link" href="#!">Implement</a>
+                    <a class="btn btn-link" href="#!">Landscape Design</a>
+                </div>
+            </div>
+        </div>
+        <div class="container wow fadeIn" data-wow-delay="0.1s">
+            <div class="copyright">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a class="border-bottom" href="{% url 'home' %}">EduTrade</a>, All Right Reserved.
+
+                        <!--/*** This template is free as long as you keep the below author’s credit link/attribution link/backlink. ***/-->
+                        <!--/*** If you'd like to use the template without the below author’s credit link/attribution link/backlink, ***/-->
+                        <!--/*** you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". ***/-->
+                        Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>. Distributed by
+                        <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-menu">
+                            <a href="#!">Home</a>
+                            <a href="#!">Cookies</a>
+                            <a href="#!">Help</a>
+                            <a href="#!">FAQs</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+    <!-- Back to Top -->
+    <a href="#!" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'web/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'web/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'web/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'web/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <!-- Put these in <head> (CSS) and just before </body> (JS) while testing -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'web/js/main.js' %}"></script>
+  </body>
+
+</html>

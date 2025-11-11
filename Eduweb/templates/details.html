@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>EduTrade</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Space+Grotesk&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'web/lib/animate/animate.min.css' %}" rel="stylesheet">
+    <link href="{% static 'web/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'web/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{% static 'web/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Navbar Start -->
+    <div class="container-fluid sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-2 border-white">
+                <a href="{% url 'home' %}" class="navbar-brand">
+                    <h1>EduTrade</h1>
+                </a>
+                <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="navbar-nav ms-auto">
+                        <a href="{% url 'home' %}" class="nav-item nav-link ">Home</a>
+                        <a href="{% url 'about' %}" class="nav-item nav-link">About</a>
+                        <div class="nav-item dropdown">
+                            <a href="#!" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Categories</a>
+                            <div class="dropdown-menu bg-light mt-2">
+                                {% if category %}
+                                    {% for i in category %}
+                                        <a href="{% url 'category' i.name %}" class="dropdown-item">{{ i.name }}</a>
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="dropdown-item text-muted">No Records</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a href="{% url 'popular' %}" class="nav-item nav-link ">Popular</a>
+                        <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                        <div class="nav-item dropdown">
+                            {% if request.session.username %}
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i> Welcome {{ request.session.username }}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end bg-light mt-2">
+                                    <a href="{% url 'signin_out' %}" class="dropdown-item">Sign out</a>
+                                </div>
+                            {% else %}
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i> Account
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end bg-light mt-2">
+                                    <a href="{% url 'signin' %}" class="dropdown-item">Sign in</a>
+                                    <a href="{% url 'signup' %}" class="dropdown-item">Sign up</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+  <div class="container py-5">
+    {% if book %}
+      <div class="row g-4 align-items-start">
+        <div class="col-md-5">
+          {% if book.cover_image %}
+            <img class="img-fluid rounded" src="{{ book.cover_image.url }}" alt="{{ book.title }}">
+          {% else %}
+            <img class="img-fluid rounded" src="{% static 'web/img/newsletter.jpg' %}" alt="{{ book.title }}">
+          {% endif %}
+        </div>
+        <div class="col-md-7">
+          <h2 class="mb-2">{{ book.title }}</h2>
+          {% if book.author %}<p class="text-muted mb-1">by {{ book.author }}</p>{% endif %}
+          {% if book.publisher %}<p class="text-muted mb-3">Publisher: {{ book.publisher }}</p>{% endif %}
+          {% if book.price %}<h4 class="text-primary mb-3">₹{{ book.price }}</h4>{% endif %}
+          {% if book.description %}<p>{{ book.description }}</p>{% endif %}
+            {% if request.session.username %}
+          <form class="mt-4" method="post" action="#">
+            {% csrf_token %}
+            <input type="hidden" name="item_type" value="book">
+            <input type="hidden" name="item_id" value="{{ book.id }}">
+            <div class="d-flex align-items-center mb-3">
+              <div class="input-group" style="width: 140px;">
+                <button class="btn btn-outline-secondary qty-decr" type="button">-</button>
+                <input type="number" class="form-control text-center qty-input" name="quantity" value="1" min="1" step="1">
+                <button class="btn btn-outline-secondary qty-incr" type="button">+</button>
+              </div>
+              <div class="ms-4">
+                <span class="text-muted">Subtotal:</span>
+                <strong class="text-primary subtotal" data-price="{{ book.price|default:0 }}">₹{{ book.price|default:0 }}</strong>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">Add to Cart</button>
+          </form>
+            {% else %}
+                     <span class="text">Sign In to Add to Cart</span>
+            {% endif %}
+        </div>
+      </div>
+    {% elif accessory %}
+      <div class="row g-4 align-items-start">
+        <div class="col-md-5">
+          {% if accessory.image %}
+            <img class="img-fluid rounded" src="{{ accessory.image.url }}" alt="{{ accessory.name }}">
+          {% else %}
+            <img class="img-fluid rounded" src="{% static 'web/img/newsletter.jpg' %}" alt="{{ accessory.name }}">
+          {% endif %}
+        </div>
+        <div class="col-md-7">
+          <h2 class="mb-2">{{ accessory.name }}</h2>
+          {% if accessory.brand %}
+          <p class="text-muted mb-1">Brand: {{ accessory.brand }}</p>
+          {% endif %}
+          {% if accessory.price %}
+          <h4 class="text-primary mb-3">₹{{ accessory.price }}</h4>
+          {% endif %}
+          {% if accessory.specs %}
+            <p>
+          {{ accessory.specs }}</p>
+          {% endif %}
+            {% if request.session.username %}
+          <form class="mt-4" method="post" action="#">
+            {% csrf_token %}
+            <input type="hidden" name="item_type" value="accessory">
+            <input type="hidden" name="item_id" value="{{ accessory.id }}">
+                    <div class="d-flex align-items-center mb-3">
+                      <div class="input-group" style="width: 140px;">
+                        <button class="btn btn-outline-secondary qty-decr" type="button">-</button>
+                        <input type="number" class="form-control text-center qty-input" name="quantity" value="1" min="1" step="1">
+                        <button class="btn btn-outline-secondary qty-incr" type="button">+</button>
+                      </div>
+                      <div class="ms-4">
+                        <span class="text-muted">Subtotal:</span>
+                        <strong class="text-primary subtotal" data-price="{{ accessory.price|default:0 }}">₹{{ accessory.price|default:0 }}</strong>
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary px-4">Add to Cart</button>
+
+          </form>
+            {% else %}
+                     <span class="text">Sign In to Add to Cart</span>
+            {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <p class="text-muted">No details available.</p>
+    {% endif %}
+  </div>
+
+
+    <!-- Footer -->
+    <div class="container-fluid bg-dark text-white-50 footer pt-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-4">Get In Touch</h5>
+                    <p><i class="fa fa-map-marker-alt me-3"></i>123 Book Street, Kochi, Kerala</p>
+                    <p><i class="fa fa-phone-alt me-3"></i>+91 98765 43210</p>
+                    <p><i class="fa fa-envelope me-3"></i>info@bookshop.com</p>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-4">Quick Links</h5>
+                    <a class="btn btn-link" href="{% url 'about' %}">About Us</a>
+                    <a class="btn btn-link" href="{% url 'contact' %}">Contact Us</a>
+                    <a class="btn btn-link" href="#!">Privacy Policy</a>
+                    <a class="btn btn-link" href="#!">Terms & Conditions</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-4">Categories</h5>
+                    {% if category %}
+                        {% for i in category %}
+                            <a class="btn btn-link" href="{% url 'category' i.name %}">{{ i.name }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <span class="btn btn-link disabled">No Records</span>
+                    {% endif %}
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white mb-4">Follow Us</h5>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-primary btn-square me-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-outline-primary btn-square me-2" href="#"><i class="fab fa-twitter"></i></a>
+                        <a class="btn btn-outline-primary btn-square me-2" href="#"><i class="fab fa-instagram"></i></a>
+                        <a class="btn btn-outline-primary btn-square me-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'web/lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'web/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'web/lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'web/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'web/js/main.js' %}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'web/lib/wow/wow.min.js' %}"></script>
+  <script src="{% static 'web/lib/easing/easing.min.js' %}"></script>
+  <script src="{% static 'web/lib/waypoints/waypoints.min.js' %}"></script>
+  <script src="{% static 'web/lib/owlcarousel/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'web/js/main.js' %}"></script>
+  <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+  <script>
+    document.querySelectorAll('.qty-incr').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        const group = btn.closest('.input-group');
+        const input = group.querySelector('.qty-input');
+        input.value = parseInt(input.value || '1') + 1;
+        updateSubtotal(btn);
+      });
+    });
+    document.querySelectorAll('.qty-decr').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        const group = btn.closest('.input-group');
+        const input = group.querySelector('.qty-input');
+        const next = Math.max(1, parseInt(input.value || '1') - 1);
+        input.value = next;
+        updateSubtotal(btn);
+      });
+    });
+    document.querySelectorAll('.qty-input').forEach(function(input){
+      input.addEventListener('input', function(){
+        if (parseInt(input.value) < 1 || isNaN(parseInt(input.value))) input.value = 1;
+        updateSubtotal(input);
+      });
+    });
+    function updateSubtotal(el){
+      const form = el.closest('form');
+      const qty = parseInt(form.querySelector('.qty-input').value || '1');
+      const subtotalEl = form.querySelector('.subtotal');
+      const price = parseFloat(subtotalEl.getAttribute('data-price') || '0');
+      const total = (qty * price).toFixed(2);
+      subtotalEl.textContent = '₹' + total;
+    }
+  </script>
+</body>
+</html>

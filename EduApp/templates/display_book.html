@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .page-header { display:flex; justify-content:space-between; align-items:center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h4 class="page-title">Books</h4>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Author</th>
+          <th>Price</th>
+            <th>Description</th>
+          <th>Cover</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in data %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ b.title }}</td>
+          <td>{{ b.category }}</td>
+          <td>{{ b.author|default:'-' }}</td>
+          <td>{{ b.price|default:'-' }}</td>
+            <td>{{b.description}}</td>
+          <td>{% if b.cover_image %}<img src="{{ b.cover_image.url }}" style="height:80px; width:80px; border-radius:8px;">{% else %}-{% endif %}</td>
+          <td>
+            <a href="{% url 'edit_book' b.id %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'delete_book' b.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this book?')">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center">No books</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
