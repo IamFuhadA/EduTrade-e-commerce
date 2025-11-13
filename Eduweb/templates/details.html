@@ -118,6 +118,8 @@
             {% csrf_token %}
             <input type="hidden" name="item_type" value="book">
             <input type="hidden" name="item_id" value="{{ book.id }}">
+            <input type="hidden" name="item_price" value="{{ book.price }}">
+            <input type="hidden" name="item_title" value="{{ book.title }}">
             <div class="d-flex align-items-center mb-3">
               <div class="input-group" style="width: 140px;">
                 <button class="btn btn-outline-secondary qty-decr" type="button">-</button>
@@ -161,6 +163,8 @@
           <form class="mt-4" method="post" action="#">
             {% csrf_token %}
             <input type="hidden" name="item_type" value="accessory">
+            <input type="hidden" name="item_price" value="{{ accessory.price }}">
+            <input type="hidden" name="item_name" value="{{ accessory.name }}">
             <input type="hidden" name="item_id" value="{{ accessory.id }}">
                     <div class="d-flex align-items-center mb-3">
                       <div class="input-group" style="width: 140px;">
