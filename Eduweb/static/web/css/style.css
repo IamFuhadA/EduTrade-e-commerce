@@ -13,13 +13,21 @@
   height: 600px;
 }
 
-/* Stronger selector to beat bootstrap/img-fluid defaults */
-.hero-header .owl-carousel .owl-item img {
-  width: 100% !important;
-  height: 600px !important;
-  object-fit: cover !important;
-  display: block;
+/* Force Owl Carousel height properly */
+.hero-header .owl-carousel .owl-item,
+.hero-header .owl-carousel .owl-stage,
+.hero-header .owl-carousel .owl-stage-outer {
+    height: 500px !important;
 }
+
+/* Force images to fit the carousel height */
+.hero-header .owl-carousel .owl-item img {
+    width: 100% !important;
+    height: 500px !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
 
 /* Ensure the hero container is tall enough */
 .hero-header {

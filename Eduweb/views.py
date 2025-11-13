@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from EduApp.models import Category,Book,Accessory
-from .models import RegistrationDB
+from .models import RegistrationDB, ContactMessage
 # Create your views here.
 
 def home_page(request):
@@ -25,6 +25,19 @@ def popular_page(request):
 
 def contact_page(request):
     category = Category.objects.all()
+    if request.method == "POST":
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message_text = request.POST.get('message')
+        if name and email and message_text:
+            ContactMessage.objects.create(
+                name=name,
+                email=email,
+                subject=subject or "",
+                message=message_text
+            )
+            return redirect('contact')
     return render(request,"contact.html", {"category": category})
 
 def category_page(request, category):

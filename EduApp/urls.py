@@ -6,6 +6,8 @@ urlpatterns = [
     path('login/', views.login_page, name='login'),
     path('login_admin/', views.admin_login, name='admin_login'),
     path('logout/', views.logout_page, name='logout'),
+    path('display_messages/', views.display_messages, name='display_messages'),
+    path('delete_message/<int:m_id>/', views.delete_message, name='delete_message'),
 
     # Category
     path('category/', views.add_category, name='add_category'),

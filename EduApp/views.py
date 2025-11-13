@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Category, Book, Accessory
+from Eduweb.models import ContactMessage
 from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 from datetime import datetime
@@ -13,6 +14,7 @@ def index(request):
         'categories_count': Category.objects.count(),
         'books_count': Book.objects.count(),
         'accessories_count': Accessory.objects.count(),
+        'messages_count': ContactMessage.objects.count(),
     }
     return render(request, "index.html", data)
 
@@ -225,3 +227,13 @@ def update_accessory(request, a_id):
 def delete_accessory(request, a_id):
     Accessory.objects.filter(id=a_id).delete()
     return redirect('display_accessory')
+
+# -------------------------------- Messages (from Eduweb) --------------------------------
+
+def display_messages(request):
+    msgs = ContactMessage.objects.order_by('-created_at')
+    return render(request, "display_messages.html", {'messages': msgs})
+
+def delete_message(request, m_id):
+    ContactMessage.objects.filter(id=m_id).delete()
+    return redirect('display_messages')

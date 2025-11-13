@@ -168,6 +168,15 @@
 								<span class="badge badge-count">{{ accessories_count }}</span>
 							</a>
 						</li>
+						<!-- Messages -->
+
+						<li class="nav-item">
+							<a href="{% url 'display_messages' %}">
+								<i class="la la-envelope"></i>
+								<p>Messages</p>
+								<span class="badge badge-count">{{ messages_count }}</span>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -228,6 +237,25 @@
 												<div class="numbers">
 													<p class="card-category">Accessories</p>
 													<h4 class="card-title">{{ accessories_count }}</h4>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card card-stats card-primary">
+									<div class="card-body ">
+										<div class="row">
+											<div class="col-5">
+												<div class="icon-big text-center">
+													<i class="la la-envelope"></i>
+												</div>
+											</div>
+											<div class="col-7 d-flex align-items-center">
+												<div class="numbers">
+													<p class="card-category">Messages</p>
+													<h4 class="card-title">{{ messages_count }}</h4>
 												</div>
 											</div>
 										</div>
